@@ -171,14 +171,18 @@ def RetrieveKey(stdscr) -> str:
 
                 imtui.RenderLabel(curses_window, imtui.Label(text='API key password', style=curses.A_BOLD, width=renderable_frame.width, voffset=1, height=1,))
 
-                input_field = imtui.InputField(max_lenght=PASSWORD_LENGTH, voffset=2)
-                imtui.RenderInputField(curses_window, input_field)
+                passwd_field = imtui.InputField(max_lenght=PASSWORD_LENGTH, voffset=2, password=True)
+                imtui.RenderInputField(curses_window, passwd_field)
 
                 if attempts >= 2:
                     imtui.RenderLabel(curses_window, imtui.Label(text=f'If you forgot your password then delete\n{str(encrypted_keyfile)}', style=curses.A_DIM, width=renderable_frame.width, voffset=6, height=3,))
 
 
-                passwd = input_field.GetInput(curses_window)
+                while True:
+                    passwd = passwd_field.GetInput(curses_window)
+                    if passwd != '':
+                        break
+
                 decrypted = gnupg.GPG().decrypt(encrypted_key, passphrase=passwd)
 
                 if decrypted.ok:
