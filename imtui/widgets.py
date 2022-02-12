@@ -68,7 +68,7 @@ class InputField:
         textbox = curses.textpad.Textbox(win)
 
         if self.password:
-            win.attron(curses.A_INVIS | curses.A_REVERSE)
+            win.attron(curses.A_INVIS | curses.A_REVERSE | curses.A_DIM)
 
         curses.curs_set(1)
         textbox.edit()
