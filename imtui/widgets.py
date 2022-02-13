@@ -38,6 +38,20 @@ class Label:
     width: int
 
 @dataclass(kw_only=True)
+class Table:
+    data: dict
+    header_style: int = curses.A_BOLD
+    data_style: int = curses.A_NORMAL
+    lines_style: int =curses.A_DIM
+    vallign: Location = Location.Top
+    voffset: int = 0
+    height: int
+
+    hallign: Location = Location.Left
+    hoffset: int = 0
+    width: int
+
+@dataclass(kw_only=True)
 class InputField:
     prompt: str = ''
     prompt_style: int = curses.A_DIM
@@ -149,7 +163,7 @@ def RenderBorder(stdscr, widget):
 
 def RenderTitle(stdsrc, widget, params = curses.A_NORMAL, full_width:bool=False, allignment:Location=Location.Left, offset:int=1):
     y, x = WidgetCorner(stdsrc, widget)
-    assert x > 1 and y > 1
+    assert x >= 1 and y >= 1
 
     title_offset = 0
     max_title_length = min(1 + widget.width + 1, len(widget.title))
@@ -177,6 +191,21 @@ def RenderTitle(stdsrc, widget, params = curses.A_NORMAL, full_width:bool=False,
 def RenderLabel(stdscr, label:Label):
     y, x = WidgetCorner(stdscr, label)
     stdscr.addstr(y, x, label.text, label.style)
+    stdscr.refresh()
+
+def RenderTable(stdscr, table:Table):
+    y, x = WidgetCorner(stdscr, table)
+
+    stdscr.addstr(y, x, ' | ' + ' | '.join([name for name in table.data]), table.header_style)
+
+    key_lenghts = 0
+    for key in table.data:
+        row_num = 0
+        for row in table.data.get(key, []):
+            stdscr.addstr(y + 2 + row_num, x + key_lenghts, ' | ' + str(row), table.data_style)
+            row_num += 1
+        key_lenghts += len(key) + 3
+
     stdscr.refresh()
 
 def RenderInputField(stdscr, field: InputField):

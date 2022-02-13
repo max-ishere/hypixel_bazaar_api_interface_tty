@@ -1,4 +1,4 @@
-import imtui, curses, pathlib, gnupg
+import imtui, curses, pathlib, gnupg, time
 
 
 def SavePlainKey(apikey:str) -> str:
